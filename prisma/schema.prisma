@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map(name: "email_verified")
+  image         String?
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  selectedBonds Int[]     @map(name: "selected_bonds")
+
+  @@map(name: "users")
+}
+
+model Account {
+  id                 Int       @id @default(autoincrement())
+  compoundId         String    @unique @map(name: "compound_id")
+  userId             Int       @map(name: "user_id")
+  providerType       String    @map(name: "provider_type")
+  providerId         String    @map(name: "provider_id")
+  providerAccountId  String    @map(name: "provider_account_id")
+  refreshToken       String?   @map(name: "refresh_token")
+  accessToken        String?   @map(name: "access_token")
+  accessTokenExpires DateTime? @map(name: "access_token_expires")
+  createdAt          DateTime  @default(now()) @map(name: "created_at")
+  updatedAt          DateTime  @default(now()) @map(name: "updated_at")
+
+
+  @@index([providerAccountId], name: "providerAccountId")
+  @@index([providerId], name: "providerId")
+  @@index([userId], name: "userId")
+  @@map(name: "accounts")
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @map(name: "user_id")
+  expires      DateTime
+  sessionToken String   @unique @map(name: "session_token")
+  accessToken  String   @unique @map(name: "access_token")
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @default(now()) @map(name: "updated_at")
+
+  @@map(name: "sessions")
+}
+
+model Bond {
+  id             Int        @id
+  code           String
+  emitent        Emitent    @relation(fields: [emitentId], references: [id])
+  emitentId      Int        @map(name: "emitent_id")
+  status         BondStatus
+  tokensCount    Int        @map(name: "tokens_count")
+  tokenPrice     Int        @map(name: "token_price")
+  rate           Float
+  duration       Int
+  currency       Currency
+  currencyCount  Int        @map(name: "currency_count")
+  whitePaperURL  String     @map(name: "white_paper_url")
+  paymentPeriod  Int        @map(name: "payment_period")
+  averageCheck   Int        @map(name: "average_check")
+  offert         Int
+  offertPeriod   Int
+  investorsCount Int
+  startsAt       DateTime   @map(name: "starts_at")
+  endsAt         DateTime   @map(name: "ends_st")
+
+  @@map(name: "bonds")
+}
+
+model FinancialReport {
+  id        Int     @id @default(autoincrement())
+  emitent   Emitent @relation(fields: [emitentId], references: [id])
+  emitentId Int     @map(name: "emitent_id")
+}
+
+model Emitent {
+  id               Int               @id @default(autoincrement())
+  code             String
+  name             String
+  description      String
+  bonds            Bond[]
+  financialReports FinancialReport[]
+
+  @@map(name: "emitents")
+}
+
+enum BondStatus {
+  NOT_POSTED
+  POSTED
+  SOLD
+  REDEEMED
+}
+
+enum Currency {
+  BYN
+  RUB
+  USD
+  EUR
+}

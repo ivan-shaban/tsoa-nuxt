@@ -2,6 +2,7 @@ import express, {
     Request as ExRequest,
     Response as ExResponse,
 } from 'express'
+import "reflect-metadata"
 import bodyParser from 'body-parser'
 import {RegisterRoutes} from '../build/routes'
 import swaggerUi from 'swagger-ui-express'

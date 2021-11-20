@@ -4,33 +4,38 @@ import {
     Get,
     Path,
     Post,
-    Query,
     Route,
     SuccessResponse,
 } from 'tsoa'
-import {User} from './user'
 import {
-    UsersService,
     UserCreationParams,
-} from './usersService'
+    UsersService,
+} from './service'
+import {
+    inject,
+    injectable,
+} from 'inversify'
 
 @Route('api/users')
+@injectable()
 export class UsersController extends Controller {
+    @inject(UsersService)
+    private readonly usersService!: UsersService
+
     @Get('{userId}')
-    public async getUser(
+    public getUser(
         @Path() userId: number,
-        @Query() name?: string,
-    ): Promise<User> {
-        return new UsersService().get(userId, name)
+    ) {
+        return this.usersService.get(userId)
     }
 
     @SuccessResponse('201', 'Created') // Custom success response
     @Post()
-    public async createUser(
+    public createUser(
         @Body() requestBody: UserCreationParams,
-    ): Promise<void> {
+    ) {
         this.setStatus(201) // set return status 201
-        new UsersService().create(requestBody)
+        this.usersService.create(requestBody)
         return
     }
 }
