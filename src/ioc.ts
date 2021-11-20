@@ -8,19 +8,22 @@ import {Controller} from 'tsoa'
 import {UsersController} from './resources/users/controller'
 import {UsersService} from './resources/users/service'
 import {prisma} from './util/prisma'
-import {PrismaClient} from '@prisma/client'
 import {Ids} from './constants/ioc'
+import {BondsController} from './resources/bonds/controller'
+import {BondsService} from './resources/bonds/service'
+import {EmitentsService} from './resources/emitents/service'
+import {EmitentsController} from './resources/emitents/controller'
 
 // Create a new container tsoa can use
 const iocContainer = new Container()
 
-iocContainer.bind<PrismaClient>(Ids.prisma).toConstantValue(prisma)
+iocContainer.bind(Ids.prisma).toConstantValue(prisma)
 iocContainer.bind(UsersService).toSelf().inSingletonScope()
 iocContainer.bind(UsersController).toSelf().inSingletonScope()
-// iocContainer.bind(TasksService).toSelf().inSingletonScope()
-// iocContainer.bind(TasksController).toSelf().inSingletonScope()
-// iocContainer.bind(LoginService).toSelf().inSingletonScope()
-// iocContainer.bind(LoginController).toSelf().inSingletonScope()
+iocContainer.bind(BondsService).toSelf().inSingletonScope()
+iocContainer.bind(BondsController).toSelf().inSingletonScope()
+iocContainer.bind(EmitentsService).toSelf().inSingletonScope()
+iocContainer.bind(EmitentsController).toSelf().inSingletonScope()
 // iocContainer.bind(BoardsService).toSelf().inSingletonScope()
 // iocContainer.bind(BoardsController).toSelf().inSingletonScope()
 

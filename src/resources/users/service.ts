@@ -14,17 +14,14 @@ export class UsersService {
     @inject(Ids.prisma)
     private readonly prisma!: PrismaClient
 
-    public async get(id: number): Promise<User> {
-        const users = await this.prisma.user.findMany()
-        console.log(`>> users`, users);
+    public async getById(id: number) {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                id,
+            }
+        })
 
-        return {
-            id,
-            email: 'jane@doe.com',
-            name: 'Jane Doe',
-            status: 'Happy',
-            phoneNumbers: [],
-        }
+        return user
     }
 
     public create(userCreationParams: UserCreationParams): User {

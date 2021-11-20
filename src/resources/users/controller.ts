@@ -26,7 +26,7 @@ export class UsersController extends Controller {
     public getUser(
         @Path() userId: number,
     ) {
-        return this.usersService.get(userId)
+        return this.usersService.getById(userId)
     }
 
     @SuccessResponse('201', 'Created') // Custom success response
