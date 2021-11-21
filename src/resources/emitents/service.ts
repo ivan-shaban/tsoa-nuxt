@@ -10,14 +10,10 @@ export class EmitentsService {
     @inject(Ids.prisma)
     private readonly prisma!: PrismaClient
 
-    public async getById(id: number) {
-        const emitent = await this.prisma.emitent.findFirst({
-            where: {
-                id,
-            },
-        })
+    public async getAll() {
+        const emitents = await this.prisma.emitent.findMany()
 
-        return emitent
+        return emitents
     }
 
     public async getByCode(code: string) {
@@ -37,4 +33,14 @@ export class EmitentsService {
     //         ...userCreationParams,
     //     }
     // }
+
+    public async getCodes() {
+        const codes = await this.prisma.emitent.findMany({
+            select: {
+                code: true,
+            }
+        })
+        return codes.map(({code}) => code)
+    }
+
 }

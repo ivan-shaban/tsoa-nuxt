@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
 }
 
 model User {
@@ -58,8 +55,8 @@ model Session {
 model Bond {
   id             Int        @id
   code           String
-  emitent        Emitent    @relation(fields: [emitentId], references: [id])
-  emitentId      Int        @map(name: "emitent_id")
+  emitent        Emitent    @relation(fields: [emitentCode], references: [code])
+  emitentCode    String     @map(name: "emitent_code")
   status         BondStatus
   tokensCount    Int        @map(name: "tokens_count")
   tokenPrice     Int        @map(name: "token_price")
@@ -80,14 +77,13 @@ model Bond {
 }
 
 model FinancialReport {
-  id        Int     @id @default(autoincrement())
-  emitent   Emitent @relation(fields: [emitentId], references: [id])
-  emitentId Int     @map(name: "emitent_id")
+  id          Int     @id @default(autoincrement())
+  emitent     Emitent @relation(fields: [emitentCode], references: [code])
+  emitentCode String  @map(name: "emitent_code")
 }
 
 model Emitent {
-  id               Int               @id @default(autoincrement())
-  code             String
+  code             String            @id
   name             String
   description      String
   bonds            Bond[]

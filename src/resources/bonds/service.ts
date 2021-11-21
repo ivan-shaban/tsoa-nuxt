@@ -24,10 +24,10 @@ export class BondsService {
         } : null
     }
 
-    public async getByEmitentId(emitentId: number) {
+    public async getByEmitentCode(emitentCode: string) {
         const bonds = await this.prisma.bond.findMany({
             where: {
-                emitentId,
+                emitentCode,
             },
         })
 
@@ -47,7 +47,11 @@ export class BondsService {
     // }
 
     public async getIds() {
-        const bonds = await this.prisma.bond.findMany()
-        return bonds.map(({id}) => id)
+        const ids = await this.prisma.bond.findMany({
+            select: {
+                id: true,
+            },
+        })
+        return ids.map(({id}) => id)
     }
 }

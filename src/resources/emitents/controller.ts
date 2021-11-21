@@ -34,6 +34,18 @@ export class EmitentsController extends Controller {
     //     }
     // }
 
+    @Get()
+    public async getEmitents(
+    ) {
+        return this.emitentsService.getAll()
+    }
+
+    @Get('list')
+    public async getEmitentCodes(
+    ) {
+        return this.emitentsService.getCodes()
+    }
+
     @Get('{code}')
     @Response('404', 'NotFound')
     public async getEmitentByCode(
@@ -52,12 +64,7 @@ export class EmitentsController extends Controller {
     public async getBonds(
         @Path() code: string,
     ) {
-        const emitent = await this.emitentsService.getByCode(code)
-        if (emitent) {
-            return this.bondsService.getByEmitentId(emitent.id)
-        } else {
-            throw new createError.NotFound(`No emitent with code: "${code}" found`)
-        }
+        return this.bondsService.getByEmitentCode(code)
     }
 
     // @SuccessResponse('201', 'Created') // Custom success response
